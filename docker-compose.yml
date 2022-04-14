@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    env_file:
+      - .env.docker
+    links:
+      - mongo
+  mongo:
+    restart: always
+    image: mongo:latest
+    ports:
+      - "2222:27017"
+  nginx:
+    restart: always
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - "./nginx/default.conf:/etc/nginx/conf.d/default.conf"
+    ports:
+      - "8080:80"
+    links:
+      - server
